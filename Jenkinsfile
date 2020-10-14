@@ -43,6 +43,7 @@ pipeline {
 			if(env.GIT_REPO_NAME == "jenkins-mb-mailtest"){
 				if(env.BRANCH_NAME == "develop") {
        				sh ''' echo ${filename} '''
+				sh ''' echo "/home/jenkins/" + ${filename} '''
 				emailext(
 				subject: "[Jenkins Build, ${JOB_NAME}, ${currentBuild.result}] Build #${BUILD_ID}",
 				body: '${FILE, path=${variable}}',
