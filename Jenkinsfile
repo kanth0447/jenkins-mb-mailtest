@@ -2,7 +2,6 @@ pipeline {
     agent any
     environment {
         filename = sh(script: "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1", returnStdout: true).trim()
-	variable = '/home/jenkins/\"${filename}\".html'
         GIT_REPO_NAME = env.GIT_URL.replaceFirst(/^.*\/([^\/]+?).git$/, '$1')
     }
     stages {
@@ -40,19 +39,15 @@ pipeline {
 		}
                 success{
                       script {
-			content = sh ''' cat /var/lib/jenkins/workspace/\"${filename}\".html '''
+			env.content = sh ''' cat /var/lib/jenkins/workspace/\"${filename}\".html '''
 			echo $content
 			if(env.GIT_REPO_NAME == "jenkins-mb-mailtest"){
 				if(env.BRANCH_NAME == "develop") {
        				sh ''' echo ${filename} '''
 				emailext(
 				subject: "[Jenkins Build, ${JOB_NAME}, ${currentBuild.result}] Build #${BUILD_ID}",
-<<<<<<< HEAD
 				body: '${FILE, path="/var/lib/jenkins/workspace/\"${filename}\".html"}',
-=======
-				body: '${FILE, path=${variable}}',
->>>>>>> 45db12760b138fbb4f1701c834c7b906e2158183
-				to: "swarup.baran@lamresearch.com",
+				to: "sreekanthtagirise@gmail.com",
 				mimeType: "text/html"
 				)
 				sh ''' rm /var/lib/jenkins/workspace/\"${filename}\".html'''
