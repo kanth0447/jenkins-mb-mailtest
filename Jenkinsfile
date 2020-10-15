@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         filename = sh(script: "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1", returnStdout: true).trim()
+	variable = '/home/jenkins/\"${filename}\".html'
         GIT_REPO_NAME = env.GIT_URL.replaceFirst(/^.*\/([^\/]+?).git$/, '$1')
     }
     stages {
@@ -28,6 +29,7 @@ pipeline {
                       echo $filename
                       echo $GIT_REPO_NAME
                       echo "HELLO"
+		      echo ${variable}
                    '''    
             }
     }
@@ -45,7 +47,11 @@ pipeline {
        				sh ''' echo ${filename} '''
 				emailext(
 				subject: "[Jenkins Build, ${JOB_NAME}, ${currentBuild.result}] Build #${BUILD_ID}",
+<<<<<<< HEAD
 				body: '${FILE, path="/var/lib/jenkins/workspace/\"${filename}\".html"}',
+=======
+				body: '${FILE, path=${variable}}',
+>>>>>>> 45db12760b138fbb4f1701c834c7b906e2158183
 				to: "swarup.baran@lamresearch.com",
 				mimeType: "text/html"
 				)
