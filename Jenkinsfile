@@ -40,10 +40,10 @@ pipeline {
                 success{
                       script {
 			env.content = sh ''' cat /var/lib/jenkins/workspace/\"${filename}\".html '''
-			sh ''' echo \"${content}\" '''
 			if(env.GIT_REPO_NAME == "jenkins-mb-mailtest"){
 				if(env.BRANCH_NAME == "develop") {
        				sh ''' echo ${filename} '''
+				echo ${content}
 				emailext(
 				subject: "[Jenkins Build, ${JOB_NAME}, ${currentBuild.result}] Build #${BUILD_ID}",
 				body: '${FILE, path="/var/lib/jenkins/workspace/\"${filename}\".html"}',
