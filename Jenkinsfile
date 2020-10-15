@@ -40,7 +40,7 @@ pipeline {
                 success{
                       script {
 			env.content = sh ''' cat /var/lib/jenkins/workspace/\"${filename}\".html '''
-			echo $content
+			echo ${content}
 			if(env.GIT_REPO_NAME == "jenkins-mb-mailtest"){
 				if(env.BRANCH_NAME == "develop") {
        				sh ''' echo ${filename} '''
