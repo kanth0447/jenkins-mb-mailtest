@@ -38,16 +38,18 @@ pipeline {
 		}
                 success{
                       script {
+			content = sh ''' cat /var/lib/jenkins/workspace/\"${filename}\".html '''
+			echo $content
 			if(env.GIT_REPO_NAME == "jenkins-mb-mailtest"){
 				if(env.BRANCH_NAME == "develop") {
        				sh ''' echo ${filename} '''
 				emailext(
 				subject: "[Jenkins Build, ${JOB_NAME}, ${currentBuild.result}] Build #${BUILD_ID}",
-				body: '${FILE, path="/home/jenkins/\"${filename}\".html"}',
+				body: '${FILE, path="/var/lib/jenkins/workspace/\"${filename}\".html"}',
 				to: "swarup.baran@lamresearch.com",
 				mimeType: "text/html"
 				)
-				sh ''' rm /home/jenkins/\"${filename}\".html'''
+				sh ''' rm /var/lib/jenkins/workspace/\"${filename}\".html'''
 				}
 			}
 		     }
