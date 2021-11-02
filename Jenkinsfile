@@ -17,16 +17,18 @@ pipeline {
         }
         stage ('Testing Stage') {
              when {
-                branch 'develop'
+                expression { BRANCH_NAME != 'master' && BRANCH_NAME == 'develop' }
             }
 
             steps {
                 sh '''
                       echo "Hello develop branch"           
                       echo $JOB_BASE_NAME
+                      echo ${WORKSPACE}
                       echo $filename
                       echo $GIT_REPO_NAME
                       echo "HELLO"
+		      echo ${variable}
                    '''    
             }
     }
@@ -37,16 +39,18 @@ pipeline {
 		}
                 success{
                       script {
+			env.content = sh ''' cat /var/lib/jenkins/workspace/\"${filename}\".html '''
 			if(env.GIT_REPO_NAME == "jenkins-mb-mailtest"){
 				if(env.BRANCH_NAME == "develop") {
        				sh ''' echo ${filename} '''
+				echo ${content}
 				emailext(
 				subject: "[Jenkins Build, ${JOB_NAME}, ${currentBuild.result}] Build #${BUILD_ID}",
-				body: '${FILE, path="/var/lib/jenkins/workspace/develop.html"}',
+				body: '${FILE, path="/var/lib/jenkins/workspace/\"${filename}\".html"}',
 				to: "sreekanthtagirise@gmail.com",
 				mimeType: "text/html"
 				)
-				sh ''' rm /var/lib/jenkins/workspace/develop.html'''
+				sh ''' rm /var/lib/jenkins/workspace/\"${filename}\".html'''
 				}
 			}
 		     }
@@ -56,11 +60,11 @@ pipeline {
 				if(env.BRANCH_NAME == "master") {
 					emailext(
 					subject: "[Jenkins Build, ${JOB_NAME}, ${currentBuild.result}] Build #${BUILD_ID}",
-					body: '${FILE,path="/var/lib/jenkins/workspace/master.html"}',
+					body: '${FILE,path="/var/jenkins_home/workspace/\"${filename}\".html"}',
 					to: "sreekanthtagirise@gmail.com",
 					mimeType: 'text/html'
 					)
-				sh ''' rm /var/lib/jenkins/workspace/master.html'''
+				sh ''' rm /var/jenkins_home/workspace/\"${filename}\".html'''
 				}
 			}
                     }
