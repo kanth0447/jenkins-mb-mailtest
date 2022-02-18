@@ -12,6 +12,8 @@ pipeline {
             steps {
                 sh '''
                       echo "Hello master branch"
+		      echo ${BRANCH_NAME}
+		      echo env.BRANCH_NAME
                    '''    
             }
         }
